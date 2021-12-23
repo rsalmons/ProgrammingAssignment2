@@ -1,15 +1,33 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Functions that use the lexical scoping within R to return an inverse matrix from cache if calculated 
+## or to calculate the inverse matrix and store in cache if not already held in cache
 
-## Write a short comment describing this function
+## Function to initialise, define the behaviours and create list names so that objects available throughout and reset when needed
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  m <- NULL
+  set <- function(y) {
+    x <<- y
+    m <<- NULL
+  }
+  get <- function() x
+  setinverse <- function(inverse) m <<- inverse
+  getinverse <- function() m
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## Function to return the inverse matrix if in cache or calculate if not already held in cache
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  m <- x$getinverse()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  data <- x$get()
+  m <- solve(data, ...)
+  x$setinverse(m)
+  m
 }
